@@ -106,6 +106,17 @@ Please see the mount option 'discard' for that in `btrfs`(5).
 *-r|--rootdir <rootdir>*::
 Populate the toplevel subvolume with files from 'rootdir'.  This does not
 require root permissions and does not mount the filesystem.
++
+With this option, only one device can be specified.
++
+NOTE: User should make sure the block device/file has large enough space to
+contain the source directory and has enough previllege to read source directory.
+Or mkfs will just fail.
++
+WARNING: Before v4.14 btrfs-progs, *--rootdir* will shrink the filesystem,
+prevent user to make use of the remaining space.
+In v4.14 btrfs-progs, this behavior is changed, and will not shrink the fs.
+The result should be the same as `mkfs`, `mount` and then `cp -r`.
 
 *-O|--features <feature1>[,<feature2>...]*::
 A list of filesystem features turned on at mkfs time. Not all features are
