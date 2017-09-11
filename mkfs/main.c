@@ -1024,6 +1024,18 @@ static int make_image(const char *source_dir, struct btrfs_root *root)
 		printf("Making image is completed.\n");
 	return 0;
 fail:
+	/*
+	 * XXX:
+	 * To avoid BUG_ON() triggered by uncommitted transaction,
+	 * here we must commit transaction before we have proper
+	 * btrfs_abort_transaction() in btrfs-progs.
+	 *
+	 * Don't worry, the magic number is not valid so the fs can't be
+	 * mounted by kernel even we commit the trans.
+	 * And we don't want to pollute the original error, so we ignore
+	 * the return value from btrfs_commit_transaction().
+	 */
+	btrfs_commit_transaction(trans, root);
 	while (!list_empty(&dir_head.list)) {
 		dir_entry = list_entry(dir_head.list.next,
 				       struct directory_name_entry, list);
