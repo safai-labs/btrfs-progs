@@ -369,9 +369,8 @@ static int cmd_qgroup_show(int argc, char **argv)
 	path = argv[optind];
 	fd = btrfs_open_dir(path, &dirstream, 1);
 	if (fd < 0) {
-		free(filter_set);
-		free(comparer_set);
-		return 1;
+		ret = 1;
+		goto out;
 	}
 
 	if (sync) {
@@ -406,6 +405,10 @@ static int cmd_qgroup_show(int argc, char **argv)
 	close_file_or_dir(fd, dirstream);
 
 out:
+	if (filter_set)
+		free(filter_set);
+	if (comparer_set)
+		free(comparer_set);
 	return !!ret;
 }
 
